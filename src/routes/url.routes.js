@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-const { createShortUrl, getAllUrls } = require("../controllers/url.controllers");
+const { createShortUrl, getAllUrls, redirectUrl } = require("../controllers/url.controllers");
 const validateUrl = require("../middlewares/validateUrl");
 
 

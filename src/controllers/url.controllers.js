@@ -60,4 +60,36 @@ async function getAllUrls(req, res) {
   }
 }
 
-module.exports = { createShortUrl, getAllUrls }
+async function redirectUrl(req, res) {
+  try {
+    const { code } = req.params;
+
+    const url = await urlModel.findOneAndUpdate(
+      { shortCode: code },
+      {
+        $inc: { clicks: 1 }, 
+        $push: {
+          clickHistory: {
+            timestamp: new Date() 
+          }
+        }
+      },
+      { new: true }
+    );
+
+    if (!url) {
+      return res.status(404).json({
+        message: "URL not found"
+      });
+    }
+
+    res.redirect(url.originalUrl);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+}
+
+module.exports = { createShortUrl, getAllUrls, redirectUrl }
